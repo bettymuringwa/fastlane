@@ -1,0 +1,118 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="MasterPage.master.cs" Inherits="RisingStar.MasterPage" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <title>RaisingStar</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device, initial-scale=1.0" />
+    <style>
+        /*  NB - For these short notes : < is replaced by &lt; and > is replaced by &gt; to avoid creating controls and code conflicts
+            NB - To make html controls available in C# codebehind use runat='server' eg: &lt;input type='text' runat='server' id='TextBox1' /&gt;
+            NB - html element ids are mangled when runat=server attribute is set making ids inaccessible in css
+            - Mangled name Example:      ctl00_ContentPlaceHolder1_TextBox1
+            - there are several ways to go around this
+            - .NET 4+ : &lt;div id="navleft" runat="server" ClientIDMode="Static"&gt;&lt;/div&gt;
+            - https://stackoverflow.com/questions/1639615/how-do-i-apply-a-css-id-when-the-control-is-runat-server
+            ** You can use control.ClientID **
+                &lt;label for='&lt;%= TextId1.ClientID %&gt;'&gt;Title:&lt;/label&gt;
+                &lt;asp:Textbox ID="TextId1" runat="server" text="Some text here" /&gt;
+            ** Or within the context of a form use FindControl().ClientID
+                &lt;label for='&lt;%= FormView1.FindControl("TextId1") %&gt;'&gt;Title:&lt;/label&gt;
+                &lt;asp:Textbox ID="TextId1" runat="server" text="Some text here" /&gt;
+            ** Mangled name contains assigned id at the end after underscore : ctl00_ContentPlaceHolder1_TextBox1
+              - We can use CSS3, ENDS WITH to identify controls as last option, its slow: [attribute$=value]
+              - [attribute$=value] - ENDS WITH      : eg      p[class$='am'] =&gt;search for classes ending with "am"
+              - [attribute^=value] - STARTS WITH    : eg      input[type^='text'] =&gt;search inputs starting with "text" : eg Text and TextArea
+              - [attribute*=value] - CONTAINS       : eg      [name*='user'] =>search for all elements whose name contains "user" : username, useraddress, txtuserpassword, cbousergroup etc
+              - tr[id^="section_"][id$="_dummy"] { height: 200px; } //The ^ denotes id begin with and $ denotes id end with.
+              - Any attribute may be used in place of id, eg name, a, class, etc as below:
+              - a[href^="http://www.example.com/product_"][href$="/about"] { background-color: red; }
+            ** CssClass VS class: both apply CSS to controls or elements. 
+               DIFFERENCE : [class property is for HTML controls] AND [CssClass property is for Server controls]
+        */
+    </style>
+    <link  rel="stylesheet" href="~/css/style.css" type="text/css" media="screen" runat="server" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+
+    <div id="divmaincontainer" class="divmaster">
+
+        <div id="divbanner" class="divmaster">
+
+            <h1 id="sitetitle">RisingStar Academy</h1>
+
+<%--            <span id="sitemotto">Where Future Leaders Are Groomed...</span>--%>
+
+        </div>
+
+        <%
+            //get currently logged user details from session
+            string email = (Session["email"] is null)?"":Session["email"].ToString();
+            string usergroup = (Session["usergroup"] is null)?"":Session["usergroup"].ToString();
+            string fullname = (Session["fullname"] is null)?"GUEST":Session["fullname"].ToString();
+
+            //build the menu bar based on user group
+
+
+            %>
+        <div id="divmenu" class="divmaster">
+            <ul id="mainmenu">
+                <li><a href="Index.aspx">Home</a></li>
+                <li><a href="AboutUs.aspx">About Us</a></li>
+                <li><a href="Login.aspx">Login</a></li>
+                <li><a href="Register.aspx">Create Account</a></li>
+                <li><a href="ContactUs.aspx">Contact Us</a></li>
+                
+
+                <% if (usergroup == "parent") {  %>
+
+               <%--any links for parents only come here--%> 
+                <li><a href="Application.aspx">Students</a></li>
+                <li><a href="AvailableClasses.aspx">Available Classes</a></li>
+                <li><a href="Enroll.aspx">Enroll</a></li>
+
+                <%} %>
+
+                
+
+                <% if (usergroup == "admin") {  %>
+
+                <li><a href="CreateClasses.aspx">Classes</a></li>
+                <li><a href="SeeUserDetails.aspx">Users</a></li>
+                <li><a href="Application.aspx">Students</a></li>
+                <li><a href="ViewAllUsers.aspx">View All users</a></li>
+                <li><a href="Enroll.aspx">Enroll</a></li>
+
+
+                 <%} %>
+
+                <li><span id="lblcurrentuser">Welcome : </span> <span id="currentuser"><%=fullname %></span> </li>
+            </ul>
+            
+
+        </div>
+
+        <div id="divcontent" class="divmaster">
+
+            <form id="form1" runat="server">
+                <div>
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
+            </form>
+
+        </div>
+
+        <div id="divfooter"  class="divmaster">
+            <p>Copyright@RisingStarAcademy-<%= System.DateTime.Now.Year %></p>
+        </div>
+
+    </div>
+
+
+</body>
+</html>

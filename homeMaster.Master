@@ -1,0 +1,122 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="homeMaster.master.cs" Inherits="abc20025_fastlane.homeMaster" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+   <title>FastLane Hypermarket</title>
+     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device, initial-scale=1.0" />
+    <link href="StyleSheet.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head> 
+
+<body>
+
+     <div id="divcontainer">     <%--outer cointainer for resizing--%> 
+
+         <div ID="divwelcome"> <p>FASTLANE HYPERMARKET <br /> </p> </div> 
+
+          <div id="divmenu" class="master">     <%--menu bar--%>
+
+              <!-- navigation bar -->
+            <nav>
+                <ul id="mainmenu">
+
+                    <% //get group ID of user logged in-current user and assign permissions based on user groups as follows:
+                        //admin(AD) staff(SF) customer(CM) 
+
+                        var groupID = (string)Session["groupID"] ?? "";
+                        //string greee = groupID == "AD" ? "customer" : "staff";//dont dele:kutloski
+
+
+                        //get currently logged user details from session
+                        //string email = (Session["email"] is null)?"":Session["email"].ToString();
+                        //string usergroup = (Session["usergroup"] is null)?"":Session["usergroup"].ToString();
+                        //string fullname = (Session["fullname"] is null)?"GUEST":Session["fullname"].ToString();
+
+                        //currentuser.InnerText = (fullname == "") ? "" : $"{fullname} - [{usergroup}]";
+
+                        %> 
+                          
+                   
+                     <% if (groupID == "") {  %>   
+                    <li><a href="home.aspx">Home</a></li>                     
+                    <li><a href="about.aspx">About</a></li>
+                    <li><a href="viewproducts.aspx">View Products</a></li>                                                       
+                    <li><a href="login.aspx">Customer LogIn</a>
+                    <li><a href="staff login.aspx">Staff LogIn</a></li>   
+                    <li><a href="registers.aspx">Customer Register</a></li>                         
+                     <%} %>
+
+                     
+                       <% if (groupID == "CM") {  %>  
+                     <li><a href="home.aspx">Home</a></li>              
+                     <li><a href="contact.aspx">Contact Us</a></li>
+                     <li><a href="Purchase.aspx">Make Purchase</a></li> 
+                     <li><a href="viewpurchases.aspx">View Purchases</a></li>
+                     <li><a href="logout.aspx">Log Out</a></li>
+                    <%-- <li><a href="#">Location</a></li>--%>
+                  <%} %>
+
+
+                             <% if (groupID == "AD") {  %>  
+                     <li><a href="home.aspx">Home</a></li>
+                    <li><a href="sales.aspx">Sales Reports</a></li>                    
+                    <li><a href="StaffRegister.aspx">Staff Management</a></li>
+                     <li><a href="profit.aspx">Profit analysis report</a></li>
+                    <li><a href="managecustomers.aspx">Manage Customers</a></li>
+                     <li><a href="logout.aspx">Log Out</a></li>
+            <%} %>
+
+                      <% if (groupID == "SF") {  %>   
+                     <li><a href="home.aspx">Home</a></li>
+                    <li><a href="stockentry.aspx">Add Stock</a></li>
+                    <li><a href="viewstock.aspx">Stock Report</a></li>
+                     <li><a href="sales.aspx">Sales Reports</a></li> 
+                     <li><a href="profit.aspx">Profit analysis report</a></li>
+                     <li><a href="managecustomers.aspx">Manage Customers</a></li>
+                     <li><a href="logout.aspx">Log Out</a></li>
+                
+            <%} %>
+                    
+                    
+                   
+                         <li><span id="currentuser" runat="server"></span></li>                    
+
+                </ul>
+            </nav>
+
+            </div>
+
+         
+
+           <div id="divmaincontent" class="=master">              <%--main content --%>
+
+                <div id="divcontent" master="cols">          <%--  inner content--%> 
+
+                        <form id="form1" runat="server">
+                            <div>
+
+                                <label id="lblerror" name="lblerror" class="info" runat="server" ClientIDMode="Static"></label> 
+
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">                         
+                                </asp:ContentPlaceHolder>
+                            </div>
+                        </form>
+                    
+                    </div><%-- end inner content--%>
+               </div>  <%--end of main content--%>
+
+           <!--footer-->
+                    <div id="divfooter" class="master">
+                        <p>
+                            Copyright@FastLane Hypermarket - <%= DateTime.Now.Year %> <br /> Designed by Betty Precious Muringwa 
+                        </p>
+                    </div> 
+
+          </div> <%--end of outer container--%>
+     
+</body>
+</html>
